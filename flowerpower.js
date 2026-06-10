@@ -43,6 +43,8 @@ let haySonido = false;//volumen supera umbral de ruido?
 let antesHabiaSonido = false; //memoria del estado haySonido un fotograma atras
 let yaSoplo = false;//pasa a true con el primer soplido
 
+let volumenAnterior = 0;
+
 function preload() {
     cargarAssets();
 }
@@ -101,7 +103,6 @@ function draw() {
 
     amp = gestorAmp.filtrada; // señal limpia normalizada
   
-    let volumenAnterior = 0;
 
     // CALCULA LA DERIVADA DEL VOLUMEN CRUDO
     //que tan rapido cambia el volumen de un fotograma a otro
