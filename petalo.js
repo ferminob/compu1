@@ -1,9 +1,9 @@
 class Petalo {
-    constructor(id_, img_, col_, tipo_) {
-        this.id = id_;
-        this.img = img_;
-        this.color = col_;
-        this.tipo = tipo_; 
+    constructor(id, img, col, tipo) {
+        this.id = id;
+        this.img = img;
+        this.color = col;
+        this.tipo = tipo; 
 
         this.pos = createVector(0, 0);
         this.rotacion = random(TWO_PI);
