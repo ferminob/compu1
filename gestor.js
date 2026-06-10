@@ -7,7 +7,7 @@ class GestorSenial {
         this.mapeada = 0; 
         this.filtrada = 0; 
         this.anterior = 0;
-        this.f = 0.50; //control de velocidad de reaccion del filtro
+        this.f = 0.80; //control de velocidad de reaccion del filtro
     }
 
     actualizar(entrada_) {
