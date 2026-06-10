@@ -27,7 +27,7 @@ let escena;
 //---MICROFONO---
 let mic;
 
-//---GESTORES AMPLITUD Y FRECUENCIA---
+//---GESTORES AMPLITUD---
 let gestorAmp;
 
 //---AMPLITUD---
