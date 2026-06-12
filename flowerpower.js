@@ -27,7 +27,12 @@ let escena;
 
 //---MICROFONO---
 let mic;
+<<<<<<< HEAD
 //---GESTOR---
+=======
+
+//---GESTORES AMPLITUD---
+>>>>>>> 2ff0b77217ed3e62500e82c894c1532c4f0f344f
 let gestorAmp;
 //---AMPLITUD---
 let amp; //variable para cargar la amplitud(volumen) de la señal de entrada del mic
@@ -103,6 +108,10 @@ function draw() {
     gestorAmp.actualizar(volumenCrudo);
 
     amp = gestorAmp.filtrada; // señal limpia normalizada
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 2ff0b77217ed3e62500e82c894c1532c4f0f344f
 
     // CALCULA LA DERIVADA DEL VOLUMEN CRUDO
     //que tan rapido cambia el volumen de un fotograma a otro
