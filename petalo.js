@@ -1,9 +1,9 @@
 class Petalo {
-    constructor(id_, img_, col_, tipo_) {
-        this.id = id_;
-        this.img = img_;
-        this.color = col_;
-        this.tipo = tipo_; 
+    constructor(id, img, col, tipo) {
+        this.id = id;
+        this.img = img;
+        this.color = col;
+        this.tipo = tipo; 
 
         this.pos = createVector(0, 0);
         this.rotacion = random(TWO_PI);
@@ -24,7 +24,7 @@ class Petalo {
     actualizar(mult, amplitud, sonando, yaSoplo) {
         if (estado === 2) {
             if (yaSoplo) {
-                let factorSoplido = sonando ? map(amplitud, 0.10, 1.0, 1.5, 2.5) : 1.2;
+                let factorSoplido = sonando ? map(amplitud, 0.35, 1.0, 1.5, 2.5) : 1.2;
                 factorSoplido = constrain(factorSoplido, 1.2, 2.8);
 
                 let direccion = (this.id % 2 === 0) ? 1 : -1;

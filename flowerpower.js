@@ -9,6 +9,7 @@ let florActual = [];
 //--- COLOR PARA INTERPOLACIÓN HSB---
 let colorActual;
 let colorObjetivo;
+let coloresFondo = [];
 
 //---MAQUINA DE ESTADOS---
 let estado = 0;
@@ -26,10 +27,8 @@ let escena;
 
 //---MICROFONO---
 let mic;
-
-//---GESTORES AMPLITUD Y FRECUENCIA---
+//---GESTOR---
 let gestorAmp;
-
 //---AMPLITUD---
 let amp; //variable para cargar la amplitud(volumen) de la señal de entrada del mic
 
@@ -38,10 +37,13 @@ let amp; //variable para cargar la amplitud(volumen) de la señal de entrada del
 let AMP_MIN = 0.02; //umbral MINIMO DE SONIDO QUE SUPERA AL RUIDO DE FONDO
 let AMP_MAX = 0.60; // tope de volumen (intensidad de sonido)
 let AMORTIGUACION = 0.50; //factor de amortiguacion de la señal
+
 //---FLAGS DE CONTROL---
 let haySonido = false;//volumen supera umbral de ruido?
 let antesHabiaSonido = false; //memoria del estado haySonido un fotograma atras
 let yaSoplo = false;//pasa a true con el primer soplido
+
+let volumenAnterior = 0;
 
 function preload() {
     cargarAssets();
@@ -77,8 +79,9 @@ function setup() {
         255
     );
 
-    colorActual = color(180, 40, 20);
-    colorObjetivo = color(180, 40, 20);
+
+    colorActual = color(260, 40, 90);
+    colorObjetivo = color(313, 40, 90);
 
     generarFlor();
 
@@ -100,13 +103,12 @@ function draw() {
     gestorAmp.actualizar(volumenCrudo);
 
     amp = gestorAmp.filtrada; // señal limpia normalizada
-  
-    let volumenAnterior = 0;
 
     // CALCULA LA DERIVADA DEL VOLUMEN CRUDO
     //que tan rapido cambia el volumen de un fotograma a otro
     let cambioAmplitud = volumenCrudo - volumenAnterior;
     volumenAnterior = volumenCrudo;
+
 
 
     // UMBRALES DE CONTROL INTERACTIVO 
@@ -120,7 +122,6 @@ function draw() {
 
     // MÁQUINA DE ESTADOS POR AUDIO
 
- 
     if (estado === 0) {
         if (empezoElSonido) {
             capasVisibles++;
@@ -129,14 +130,14 @@ function draw() {
             }
         }
     }
-    
+
     else if (estado === 1) {
         if (haySonido) {
             capasVisibles = florActual.length;
             estado = 2;
         }
     }
-    
+
     else if (estado === 2) {
         if (amp > umbralSoplido) {
             yaSoplo = true;
@@ -154,7 +155,7 @@ function draw() {
         }
         else if (amp > umbralSoplido) {
             contadorVolar += 1;
-            if (contadorVolar > 180) {
+            if (contadorVolar > 60) {
                 estado = 3;
                 contadorVolar = 0;
                 for (let i = 0; i < florActual.length; i++) {
@@ -170,7 +171,7 @@ function draw() {
     }
     else if (estado === 3) {
         contadorVolar++;
-        if (contadorVolar > 60) {
+        if (contadorVolar > 80) {
             generarFlor();
         }
     }
@@ -228,9 +229,9 @@ function generarFlor() {
     yaSoplo = false;
 
     let paletas = [
-        [300, 360],
-        [160, 240],
-        [20, 80]
+        [320, 330],
+        [265, 290],
+        [186, 200]
     ];
 
     let rango = random(paletas);
@@ -240,12 +241,11 @@ function generarFlor() {
         rango[1]
     );
 
-    let hueContraste = (hueBase + 180) % 360;
 
     colorObjetivo = color(
-        hueContraste,
-        random(90, 100),
-        random(85, 95)
+        hueBase,
+        50,
+        100
     );
 
     let cantidadGrandes = floor(random(3, 6));
@@ -286,7 +286,7 @@ function generarFlor() {
 
 function generarColor(baseHue) {
     let h = (baseHue + random(-30, 30) + 360) % 360;
-    return color(h, random(60, 90), random(70, 100), 230);
+    return color(h, random(50, 70), random(85, 95), 250);
 }
 
 function keyPressed() {
