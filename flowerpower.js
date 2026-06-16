@@ -27,12 +27,8 @@ let escena;
 
 //---MICROFONO---
 let mic;
-<<<<<<< HEAD
-//---GESTOR---
-=======
 
 //---GESTORES AMPLITUD---
->>>>>>> 2ff0b77217ed3e62500e82c894c1532c4f0f344f
 let gestorAmp;
 //---AMPLITUD---
 let amp; //variable para cargar la amplitud(volumen) de la señal de entrada del mic
@@ -63,7 +59,6 @@ function setup() {
         canvasW,
         canvasH
     );
-
     escena.imageMode(CENTER);
 
     escena.colorMode(
@@ -84,9 +79,27 @@ function setup() {
         255
     );
 
+    let todosLosAssets = [...petalosGrandes, ...petalosChicos, ...centros];
+    for (let img of todosLosAssets) {
+        img.loadPixels();
+        for (let i = 0; i < img.pixels.length; i += 4) {
+            let r = img.pixels[i];
+            let g = img.pixels[i + 1];
+            let b = img.pixels[i + 2];
 
-    colorActual = color(260, 40, 90);
-    colorObjetivo = color(313, 40, 90);
+            let brillo = (r + g + b) / 3;
+
+            if (brillo > 120) {
+                img.pixels[i] = 240;
+                img.pixels[i + 1] = 240;
+                img.pixels[i + 2] = 240;
+            }
+        }
+        img.updatePixels();
+    }
+
+    colorActual = color(204, 84, 90);
+    colorObjetivo = color(313, 64, 90);
 
     generarFlor();
 
@@ -108,10 +121,7 @@ function draw() {
     gestorAmp.actualizar(volumenCrudo);
 
     amp = gestorAmp.filtrada; // señal limpia normalizada
-<<<<<<< HEAD
-=======
-  
->>>>>>> 2ff0b77217ed3e62500e82c894c1532c4f0f344f
+
 
     // CALCULA LA DERIVADA DEL VOLUMEN CRUDO
     //que tan rapido cambia el volumen de un fotograma a otro
@@ -188,7 +198,13 @@ function draw() {
     colorActual = lerpColor(colorActual, colorObjetivo, 0.03);
     escena.background(colorActual);
 
-    let multiplicadorGiro = map(amp, umbralSilencio, umbralSoplido, 0.5, 2.5);
+    //contador de velocidad
+    let multiplicadorGiro = map(contadorVolar, 0, 60, 1.0, 6.0);
+
+    if (contadorVolar === 0) multiplicadorGiro = 0;
+
+    multiplicadorGiro = constrain(multiplicadorGiro, 0, 6.0);
+
 
     for (let i = 0; i < capasVisibles; i++) {
         let p = florActual[i];
@@ -238,10 +254,12 @@ function generarFlor() {
     yaSoplo = false;
 
     let paletas = [
-        [320, 330],
-        [265, 290],
-        [186, 200]
+        [300, 360],
+        [160, 240],
+        [20, 80]
     ];
+
+
 
     let rango = random(paletas);
 
@@ -257,7 +275,7 @@ function generarFlor() {
         100
     );
 
-    let cantidadGrandes = floor(random(3, 6));
+    let cantidadGrandes = floor(random(8, 10));
 
     for (let i = 0; i < cantidadGrandes; i++) {
         florActual.push(
@@ -295,7 +313,7 @@ function generarFlor() {
 
 function generarColor(baseHue) {
     let h = (baseHue + random(-30, 30) + 360) % 360;
-    return color(h, random(50, 70), random(85, 95), 250);
+    return color(h, random(50, 80), random(60, 120));
 }
 
 function keyPressed() {

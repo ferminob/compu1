@@ -3,12 +3,12 @@ class Petalo {
         this.id = id;
         this.img = img;
         this.color = col;
-        this.tipo = tipo; 
+        this.tipo = tipo;
 
         this.pos = createVector(0, 0);
         this.rotacion = random(TWO_PI);
 
-        this.velocidadGiro = random(0.003, 0.006); 
+        this.velocidadGiro = random(0.003, 0.006);
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -24,29 +24,29 @@ class Petalo {
     actualizar(mult, amplitud, sonando, yaSoplo) {
         if (estado === 2) {
             if (yaSoplo) {
-                let factorSoplido = sonando ? map(amplitud, 0.35, 1.0, 1.5, 2.5) : 1.2;
-                factorSoplido = constrain(factorSoplido, 1.2, 2.8);
+
+                let factorSoplido = sonando ? map(amplitud, 0.25, 1.0, 1.2, 2) : 1.2;
+                factorSoplido = constrain(factorSoplido, 1.2, 2);
 
                 let direccion = (this.id % 2 === 0) ? 1 : -1;
 
                 this.rotacion += (this.velocidadGiro * (this.id + 1) * direccion) * factorSoplido;
+            }
 
-                // --- CONTROL DE VIBRACIÓN--- 
-                if (sonando) {
-                    let intensidad = map(amplitud, 0.10, 1.0, 2.0, 12.0);
-                    intensidad = constrain(intensidad, 2.0, 12.0);
+            // --- CONTROL DE VIBRACIÓN --- 
+            if (sonando) {
+                let intensidad = map(amplitud, 0.10, 1.0, 2.0, 12.0);
+                intensidad = constrain(intensidad, 2.0, 12.0);
 
-                    this.offsetX = random(-intensidad, intensidad);
-                    this.offsetY = random(-intensidad, intensidad);
-                }
-
-                else {
-                    this.offsetX = 0;
-                    this.offsetY = 0;
-                }
+                this.offsetX = random(-intensidad, intensidad);
+                this.offsetY = random(-intensidad, intensidad);
+            } else {
+                this.offsetX = 0;
+                this.offsetY = 0;
             }
         }
 
+        // ---  CENTRO ---
         if (this.tipo === "centro") {
             if (estado === 1) {
                 if (!sonando) {
@@ -56,8 +56,7 @@ class Petalo {
                     this.offsetX = 0;
                     this.offsetY = 0;
                 }
-            }
-            else if (estado === 2 && !sonando) {
+            } else if (estado === 2 && !sonando) {
                 this.offsetX = 0;
                 this.offsetY = 0;
             }
@@ -82,6 +81,10 @@ class Petalo {
     }
 
     dibujar(buffer) {
+
+
+
+
         buffer.push();
 
         buffer.translate(canvasW / 2 + this.offsetX, canvasH / 2 + this.offsetY);
