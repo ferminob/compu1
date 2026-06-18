@@ -275,7 +275,7 @@ function generarFlor() {
         100
     );
 
-    let cantidadGrandes = floor(random(8, 10));
+    let cantidadGrandes = floor(random(2, 4));
 
     for (let i = 0; i < cantidadGrandes; i++) {
         florActual.push(
@@ -288,7 +288,7 @@ function generarFlor() {
         );
     }
 
-    let cantidadChicos = floor(random(2, 5));
+    let cantidadChicos = floor(random(3, 5));
 
     for (let i = 0; i < cantidadChicos; i++) {
         florActual.push(
