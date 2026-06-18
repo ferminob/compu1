@@ -223,8 +223,8 @@ function draw() {
 }
 
 function cargarAssets() {
-    let cantidadGrandes = 3;
-    let cantidadChicos = 3;
+    let cantidadGrandes = 15;
+    let cantidadChicos = 6;
     let cantidadCentros = 3;
 
     // GRANDES
