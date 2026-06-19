@@ -82,7 +82,7 @@ function setup() {
     let todosLosAssets = [...petalosGrandes, ...petalosChicos, ...centros];
     for (let img of todosLosAssets) {
         img.loadPixels();
-        for (let i = 0; i < img.pixels.length; i += 10) {
+        for (let i = 0; i < img.pixels.length; i += 5) {
             let r = img.pixels[i];
             let g = img.pixels[i + 1];
             let b = img.pixels[i + 2];
