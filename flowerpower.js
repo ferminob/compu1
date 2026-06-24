@@ -9,7 +9,6 @@ let florActual = [];
 //--- COLOR PARA INTERPOLACIÓN HSB---
 let colorActual;
 let colorObjetivo;
-let coloresFondo = [];
 
 //---MAQUINA DE ESTADOS---
 let estado = 0;
@@ -31,20 +30,17 @@ let mic;
 //---GESTORES AMPLITUD---
 let gestorAmp;
 //---AMPLITUD---
-let amp; //variable para cargar la amplitud(volumen) de la señal de entrada del mic
+let amp;
 
-//Toda señal siempre es ruidosa, hay que amortiguarla para poder controlarla y que vaya de manera mas suave
 //---CONFIGURACION Y UMBRALES DE AUDIO---
-let AMP_MIN = 0.02; //umbral MINIMO DE SONIDO QUE SUPERA AL RUIDO DE FONDO
-let AMP_MAX = 0.60; // tope de volumen (intensidad de sonido)
-let AMORTIGUACION = 0.50; //factor de amortiguacion de la señal
+let AMP_MIN = 0.02; 
+let AMP_MAX = 0.60; 
+let AMORTIGUACION = 0.50; 
 
-//---FLAGS DE CONTROL---
-let haySonido = false;//volumen supera umbral de ruido?
-let antesHabiaSonido = false; //memoria del estado haySonido un fotograma atras
-let yaSoplo = false;//pasa a true con el primer soplido
-
-let volumenAnterior = 0;
+let haySonido = false;
+let antesHabiaSonido = false; 
+let yaSoplo = false;
+let ampAnterior = 0;
 
 function preload() {
     cargarAssets();
@@ -90,9 +86,9 @@ function setup() {
             let brillo = (r + g + b) / 3;
 
             if (brillo > 120) {
-                img.pixels[i] = 240;
-                img.pixels[i + 1] = 240;
-                img.pixels[i + 2] = 240;
+                img.pixels[i] = 255;
+                img.pixels[i + 1] = 255;
+                img.pixels[i + 2] = 255;
             }
         }
         img.updatePixels();
@@ -107,39 +103,31 @@ function setup() {
     mic.start(); //se inicia el flujo de audio
 
     //---GESTOR---
-    gestorAmp = new GestorSenial(AMP_MIN, AMP_MAX);//defino los umbrales de señal con los que va a trabajar
+    gestorAmp = new GestorSenial(AMP_MIN, AMP_MAX);
 
-    gestorAmp.f = AMORTIGUACION; //el factor por el cual amortigua lo guarda
+    gestorAmp.f = AMORTIGUACION; 
 
     //---MOTOR DE AUDIO---
     userStartAudio(); // resuelve bloqueos de microfonos en el navegador
 }
 
 function draw() {
-    // CAPTURA VALOR CRUDO Y ACTUALIZAR GESTOR
+
+    // ---CAPTURA DE SEÑAL---
     let volumenCrudo = mic.getLevel();
     gestorAmp.actualizar(volumenCrudo);
 
-    amp = gestorAmp.filtrada; // señal limpia normalizada
+    amp = gestorAmp.filtrada;
 
 
-    // CALCULA LA DERIVADA DEL VOLUMEN CRUDO
-    //que tan rapido cambia el volumen de un fotograma a otro
-    let cambioAmplitud = volumenCrudo - volumenAnterior;
-    volumenAnterior = volumenCrudo;
+    // UMBRALES DE CONTROL  
+    let umbralMinSoplido = 0.20;
+    let umbralMaxSoplido = 0.30;
 
-
-
-    // UMBRALES DE CONTROL INTERACTIVO 
-    let umbralSilencio = 0.08;
-    let umbralSoplido = 0.35;
-
-    // CONDICION BOOLEANA Y EVENTO
-    haySonido = amp > umbralSilencio;
+    haySonido = amp > AMP_MIN;
     let empezoElSonido = haySonido && !antesHabiaSonido;
+    let terminoElSonido = !haySonido && antesHabiaSonido;
 
-
-    // MÁQUINA DE ESTADOS POR AUDIO
 
     if (estado === 0) {
         if (empezoElSonido) {
@@ -151,29 +139,19 @@ function draw() {
     }
 
     else if (estado === 1) {
-        if (haySonido) {
+        if (terminoElSonido) {
             capasVisibles = florActual.length;
             estado = 2;
         }
     }
-
     else if (estado === 2) {
-        if (amp > umbralSoplido) {
+        if (haySonido && amp > umbralMinSoplido) {
             yaSoplo = true;
         }
 
-        if (haySonido && abs(cambioAmplitud) > umbralSoplido) {
+
+        if (haySonido && amp > umbralMaxSoplido) {
             contadorVolar += 5;
-            if (contadorVolar > 60) {
-                estado = 3;
-                contadorVolar = 0;
-                for (let i = 0; i < florActual.length; i++) {
-                    florActual[i].iniciarVuelo(amp);
-                }
-            }
-        }
-        else if (amp > umbralSoplido) {
-            contadorVolar += 1;
             if (contadorVolar > 60) {
                 estado = 3;
                 contadorVolar = 0;
@@ -188,6 +166,7 @@ function draw() {
             }
         }
     }
+
     else if (estado === 3) {
         contadorVolar++;
         if (contadorVolar > 80) {
@@ -198,21 +177,15 @@ function draw() {
     colorActual = lerpColor(colorActual, colorObjetivo, 0.03);
     escena.background(colorActual);
 
-    //contador de velocidad
-    let multiplicadorGiro = map(contadorVolar, 0, 60, 1.0, 6.0);
-
-    if (contadorVolar === 0) multiplicadorGiro = 0;
-
-    multiplicadorGiro = constrain(multiplicadorGiro, 0, 6.0);
 
 
     for (let i = 0; i < capasVisibles; i++) {
         let p = florActual[i];
-        p.actualizar(multiplicadorGiro, amp, haySonido, yaSoplo);
+        p.actualizar(amp, haySonido, yaSoplo);
         p.dibujar(escena);
     }
 
-    background(0);
+    background(255);
     let escala = min(width / canvasW, height / canvasH);
     let finalW = canvasW * escala;
     let finalH = canvasH * escala;

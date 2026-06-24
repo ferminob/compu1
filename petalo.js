@@ -5,9 +5,7 @@ class Petalo {
         this.color = col;
         this.tipo = tipo;
 
-        this.pos = createVector(0, 0);
         this.rotacion = random(TWO_PI);
-
         this.velocidadGiro = random(0.003, 0.006);
 
         this.offsetX = 0;
@@ -21,12 +19,12 @@ class Petalo {
         this.velRotacionVuelo = random(-0.05, 0.05);
     }
 
-    actualizar(mult, amplitud, sonando, yaSoplo) {
+    actualizar(amplitud, haySonido, yagitSoplo) {
         if (estado === 2) {
             if (yaSoplo) {
 
-                let factorSoplido = sonando ? map(amplitud, 0.25, 1.0, 1.2, 2) : 1.2;
-                factorSoplido = constrain(factorSoplido, 1.2, 2);
+                let factorSoplido = haySonido ? map(amplitud, 0.20, 0.30, 1.3, 2) : 1.2;
+                factorSoplido = constrain(factorSoplido, 1.3, 2);
 
                 let direccion = (this.id % 2 === 0) ? 1 : -1;
 
@@ -34,12 +32,12 @@ class Petalo {
             }
 
             // --- CONTROL DE VIBRACIÓN --- 
-            if (sonando) {
-                let intensidad = map(amplitud, 0.10, 1.0, 2.0, 12.0);
-                intensidad = constrain(intensidad, 2.0, 12.0);
+            if (haySonido) {
+                let x = 50 * noise(0.0010 * frameCount);
+                let y = 50 * noise(0.0010 * frameCount + 10000);
 
-                this.offsetX = random(-intensidad, intensidad);
-                this.offsetY = random(-intensidad, intensidad);
+                this.offsetX = random(-x, y);
+                this.offsetY = random(x, -y);
             } else {
                 this.offsetX = 0;
                 this.offsetY = 0;
@@ -49,14 +47,14 @@ class Petalo {
         // ---  CENTRO ---
         if (this.tipo === "centro") {
             if (estado === 1) {
-                if (!sonando) {
+                if (haySonido) {
                     this.offsetX = random(-3, 3);
                     this.offsetY = random(-3, 3);
                 } else {
                     this.offsetX = 0;
                     this.offsetY = 0;
                 }
-            } else if (estado === 2 && !sonando) {
+            } else if (estado === 2 && !haySonido) {
                 this.offsetX = 0;
                 this.offsetY = 0;
             }
@@ -75,7 +73,8 @@ class Petalo {
     }
 
     iniciarVuelo(fuerzaSoplido) {
-        let impulso = map(fuerzaSoplido, 0, 1, 1, 2.5);
+        let impulso = map(fuerzaSoplido, 0.30, 0.35, 1.3, 2.5);
+        impulso = constrain(impulso, 1.3, 2.5);
         this.velX *= impulso;
         this.velY *= impulso;
     }
