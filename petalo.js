@@ -19,7 +19,7 @@ class Petalo {
         this.velRotacionVuelo = random(-0.05, 0.05);
     }
 
-    actualizar(amplitud, haySonido, yagitSoplo) {
+    actualizar(amplitud, haySonido, yaSoplo) {
         if (estado === 2) {
             if (yaSoplo) {
 
