@@ -18,8 +18,8 @@ let capasVisibles = 0;
 let contadorVolar = 0;
 
 //---DIMENSIONES---
-let canvasW = 1562;
-let canvasH = 1557;
+let canvasW = 702;
+let canvasH = 701;
 
 // --- BUFFER INTERNO---
 let escena;
